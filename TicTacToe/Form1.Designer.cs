@@ -33,20 +33,23 @@
             // 
             // ticTacToeBoard1
             // 
-            ticTacToeBoard1.Location = new Point(264, 101);
+            ticTacToeBoard1.Location = new Point(9, 9);
             ticTacToeBoard1.Margin = new Padding(0);
-            ticTacToeBoard1.MaximumSize = new Size(231, 231);
-            ticTacToeBoard1.MinimumSize = new Size(231, 231);
+            ticTacToeBoard1.MaximumSize = new Size(231, 257);
+            ticTacToeBoard1.MinimumSize = new Size(231, 257);
             ticTacToeBoard1.Name = "ticTacToeBoard1";
-            ticTacToeBoard1.Size = new Size(231, 231);
+            ticTacToeBoard1.Size = new Size(231, 257);
             ticTacToeBoard1.TabIndex = 0;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(248, 273);
             Controls.Add(ticTacToeBoard1);
+            MaximizeBox = false;
+            MaximumSize = new Size(264, 312);
+            MinimumSize = new Size(264, 312);
             Name = "Form1";
             Text = "Form1";
             ResumeLayout(false);

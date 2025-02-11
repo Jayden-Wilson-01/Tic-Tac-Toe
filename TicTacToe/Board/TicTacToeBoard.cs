@@ -18,10 +18,16 @@ namespace TicTacToe.Board
         }
 
         //Current player playing the game
-        byte currentPlayer = 0;
+        byte currentPlayer = 1;
+
+        //Points of the two players
+        byte[] playerPoints = {0, 0};
+
+        //Check status of winning, 1 = winner, 0 = still playing, -1 = draw
+        int won = 0;
 
         //A digital board of the game
-        string[] boardArray = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+        string[] boardArray = { "0", "1", "2", "3", "4", "5", "6", "7", "8" };
 
         /// <summary>
         /// Method to allow for user to click on any button and make it X or O
@@ -33,14 +39,19 @@ namespace TicTacToe.Board
             //Set value of button
             SetValue((Button)sender);
 
-            //Check if any player has won
-            bool won = CheckWin();
+            //Check if any player has won 
+            won = CheckWin();
 
             //If a player wins, reset, else continue to play and play as the next player
-            if (won)
+            if (won == 1)
             {
-                MessageBox.Show($"Winning player is player {currentPlayer + 1}");
-
+                MessageBox.Show($"Winning player is player {currentPlayer}");
+                GivePoint(currentPlayer - 1);
+                ResetGame();
+            }
+            else if(won == -1)
+            {
+                MessageBox.Show($"Both players are a tie");
                 ResetGame();
             }
             else
@@ -50,21 +61,39 @@ namespace TicTacToe.Board
         }
 
         /// <summary>
+        /// Add a point for a player
+        /// </summary>
+        /// <param name="player">the player to give a point to</param>
+        private void GivePoint(int player)
+        {
+            playerPoints[player]++;
+            labelPlayer1Points.Text = playerPoints[0].ToString();
+            labelPlayer2Points.Text = playerPoints[1].ToString();
+        }
+
+        /// <summary>
         /// Reset the game to its original state
         /// </summary>
         private void ResetGame()
         {
-            //Set player to 0
-            currentPlayer = 0;
+            //Set player to 1
+            currentPlayer = 1;
+
+            //Highlight what player is playing
+            labelPlayer1.ForeColor = Color.Blue;
+            labelPlayer2.ForeColor = Color.Black;
 
             //Reset digital board
-            for (int i = 1; i < boardArray.Length; i++)
+            for (int i = 0; i < boardArray.Length; i++)
             {
                 //Reset digital board values
                 boardArray[i] = i.ToString();
 
                 //Reset board button values
                 flowLayoutPanelButtons.Controls[i].Text = "";
+
+                //Reset board button enabled states
+                flowLayoutPanelButtons.Controls[i].Enabled = true;
             }
         }
 
@@ -73,13 +102,18 @@ namespace TicTacToe.Board
         /// </summary>
         private void SetCurrentPlayer()
         {
-            if (currentPlayer == 0)
+            if (currentPlayer == 1)
             {
-                currentPlayer++;
+                currentPlayer = 2;
+                labelPlayer2.ForeColor = Color.Blue;
+                labelPlayer1.ForeColor = Color.Black;
+
             }
-            else if (currentPlayer == 1)
+            else if (currentPlayer == 2)
             {
-                currentPlayer--;
+                currentPlayer = 1;
+                labelPlayer1.ForeColor = Color.Blue;
+                labelPlayer2.ForeColor = Color.Black;
             }
         }
 
@@ -97,18 +131,21 @@ namespace TicTacToe.Board
                     int buttonIndex = int.Parse(button.Tag.ToString());
 
                     //Check which player is currently playing
-                    if(currentPlayer == 0)
+                    if(currentPlayer == 1)
                     {
                         //Set button text to X
                         button.Text = "X";
                         boardArray[buttonIndex] = "X";
                     }
-                    else if(currentPlayer == 1)
+                    else if(currentPlayer == 2)
                     {
                         //Set button text to O
                         button.Text = "O";
                         boardArray[buttonIndex] = "O";
                     }
+
+                    //Prevent buttob being clicked again
+                    button.Enabled = false;
                 }
             }
             catch
@@ -121,7 +158,7 @@ namespace TicTacToe.Board
         /// Method to check if player has won
         /// </summary>
         /// <returns>Returns if player has won</returns>
-        private bool CheckWin()
+        private int CheckWin()
         {
             try
             {
@@ -129,19 +166,19 @@ namespace TicTacToe.Board
                 //First row
                 if (boardArray[0] == boardArray[1] && boardArray[1] == boardArray[2])
                 {
-                    return true;
+                    return 1;
                 }
 
                 //Second row
                 else if (boardArray[3] == boardArray[4] && boardArray[4] == boardArray[5])
                 {
-                    return true;
+                    return 1;
                 }
 
                 //Third row
                 else if (boardArray[6] == boardArray[7] && boardArray[7] == boardArray[8])
                 {
-                    return true;
+                    return 1;
                 }
                 #endregion
 
@@ -149,19 +186,19 @@ namespace TicTacToe.Board
                 //First column
                 else if (boardArray[0] == boardArray[3] && boardArray[3] == boardArray[6])
                 {
-                    return true;
+                    return 1;
                 }
 
                 //Second column
                 else if (boardArray[1] == boardArray[4] && boardArray[4] == boardArray[7])
                 {
-                    return true;
+                    return 1;
                 }
 
                 //Third column
                 else if (boardArray[2] == boardArray[5] && boardArray[5] == boardArray[8])
                 {
-                    return true;
+                    return 1;
                 }
                 #endregion
 
@@ -169,24 +206,32 @@ namespace TicTacToe.Board
                 //First diagonal
                 else if (boardArray[0] == boardArray[4] && boardArray[4] == boardArray[8])
                 {
-                    return true;
+                    return 1;
                 }
 
                 //Second diagonal
                 else if (boardArray[2] == boardArray[4] && boardArray[4] == boardArray[6])
                 {
-                    return true;
+                    return 1;
+                }
+                #endregion
+
+                #region Draw
+                else if (boardArray[0] != "0" && boardArray[1] != "1" && boardArray[2] != "2" && boardArray[3] != "3" && boardArray[4] != "4" && boardArray[5] != "5" && boardArray[6] != "6" && boardArray[7] != "7" && boardArray[8] != "8")
+                {
+                    return -1;
                 }
                 #endregion
 
                 else
                 {
-                    return false;
+                    return 0;
                 }
             }
             catch (Exception e)
             {
-                return false;
+                MessageBox.Show("Something went wrong");
+                return 0;
             }
         }
     }
